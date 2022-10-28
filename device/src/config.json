@@ -1,0 +1,9 @@
+{
+  "network": {
+    "ssid": null,
+    "password": null
+  },
+  "device": {
+    "name": "DefaultName"
+  }
+}
