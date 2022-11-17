@@ -1,9 +1,10 @@
-import { Context, HttpResponseConflict, HttpResponseOK, HttpResponseUnauthorized, Post, ValidateBody } from '@foal/core';
+import { Context, dependency, HttpResponseConflict, HttpResponseOK, HttpResponseUnauthorized, Post, ValidateBody } from '@foal/core';
 import * as argon2 from 'argon2';
 
 import { getSecretOrPrivateKey } from '@foal/jwt';
 import { sign } from 'jsonwebtoken';
 import { User } from '../entities';
+import { LoggerService } from '../services';
 
 interface LoginBody {
   email: string;
@@ -17,6 +18,8 @@ interface SignupBody {
 }
 
 export class AuthController {
+  @dependency
+  logger: LoggerService;
 
   @Post('/login')
   @ValidateBody({
@@ -29,14 +32,15 @@ export class AuthController {
   })
   async login(ctx: Context, params, body: LoginBody) {
     const { email, password } = body;
-    const user = await User.findOne({where: {
-      email
-    }});
+    const user = await User.findOne({
+      where: {email},
+      select: ['id', 'passwordHash']
+    });
 
     if (!user) {
       return new HttpResponseUnauthorized();
     }
-
+    
     const valid = await argon2.verify(user.passwordHash, password);
     if (!valid) {
       return new HttpResponseUnauthorized();

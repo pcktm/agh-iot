@@ -1,10 +1,12 @@
-import { controller, Get, HttpResponseOK, IAppController, Context } from '@foal/core';
-import { AuthController } from './controllers';
+import { controller, Get, HttpResponseOK, IAppController, Context, ApiInfo } from '@foal/core';
+import { ApiController } from './controllers';
+import { OpenApiController } from './controllers/openapi.controller';
 import { RequireUser } from './hooks';
 
 export class AppController implements IAppController {
   subControllers = [
-    controller('/auth', AuthController),
+    controller('/api', ApiController),
+    controller('/docs', OpenApiController)
   ];
 
   @Get('/')
