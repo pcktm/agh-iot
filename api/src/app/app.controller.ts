@@ -1,4 +1,4 @@
-import { controller, Get, HttpResponseOK, IAppController, Context, ApiInfo } from '@foal/core';
+import { controller, Get, HttpResponseOK, IAppController, Context } from '@foal/core';
 import { ApiController } from './controllers';
 import { OpenApiController } from './controllers/openapi.controller';
 import { RequireUser } from './hooks';
