@@ -1,0 +1,11 @@
+port: 3000
+settings:
+  loggerFormat: tiny
+  jwt:
+    secret: ""
+    secretEncoding: base64
+session:
+  store: "@foal/typeorm"
+database:
+  type: postgres
+  url: postgres://postgres:postgres@localhost:5432/iot

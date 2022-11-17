@@ -1,7 +1,7 @@
 import network
 import socket
 import machine
-
+import json
 
 def connect_to_ap(ssid, password):
     wlan = network.WLAN(network.STA_IF)
@@ -33,7 +33,12 @@ def busy_wait_for_config():
         cl_file = cl.makefile('rwb', 0)
         while True:
             line = cl_file.readline()
-            print(line)
+            try:
+                parsed = json.loads(line)
+                print('received config:', parsed)
+                return parsed
+            except ValueError:
+                continue
             if not line or line == b'\r\n':
                 break
         cl.send('OK')

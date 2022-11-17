@@ -1,0 +1,4 @@
+database:
+  url: ./test_db.sqlite3
+  synchronize: true
+  dropSchema: true

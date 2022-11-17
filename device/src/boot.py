@@ -12,12 +12,15 @@ def read_config():
 
 def cold_boot():
     config = read_config()
-    if config["network"]['ssid'] is not None:
+    if config["network"]["ssid"] is not None:
         net.connect_to_ap(config["network"]["ssid"],
                           config["network"]["password"])
     else:
         net.expose_ap()
-    net.busy_wait_for_config()
+        config = net.busy_wait_for_config()
+        with open('config.json', 'w') as f:
+            json.dump(config, f)
+        machine.reset()
 
 
 cold_boot()

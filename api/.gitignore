@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+npm-debug.log
+build/
+.env
+.env.local
+.env.*.local
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+.vscode/
+.idea/
+config/*
+!config/default.yml
+!config/e2e.yml
+!config/test.yml
