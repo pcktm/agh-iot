@@ -1,4 +1,4 @@
-import { Context, dependency, HttpResponseConflict, HttpResponseOK, HttpResponseUnauthorized, Post, ValidateBody } from '@foal/core';
+import { ApiOperationSummary, ApiResponse, Context, dependency, HttpResponseConflict, HttpResponseOK, HttpResponseUnauthorized, IApiResponse, Post, ValidateBody } from '@foal/core';
 import * as argon2 from 'argon2';
 
 import { getSecretOrPrivateKey } from '@foal/jwt';
@@ -17,6 +17,20 @@ interface SignupBody {
   password: string;
 }
 
+const tokenResponseContent: IApiResponse = {
+  description: 'Success',
+  content: {
+    'application/json': {
+      schema: {
+        type: 'object',
+        properties: {
+          token: { type: 'string' }
+        }
+      }
+    }
+  }
+}
+
 export class AuthController {
   @dependency
   logger: LoggerService;
@@ -30,6 +44,9 @@ export class AuthController {
     required: [ 'email', 'password' ],
     type: 'object',
   })
+  @ApiOperationSummary('Log in and get a JWT token')
+  @ApiResponse(200, tokenResponseContent)
+  @ApiResponse(401, {description: 'Unauthorized, invalid password or no such user'})
   async login(ctx: Context, params, body: LoginBody) {
     const { email, password } = body;
     const user = await User.findOne({
@@ -60,6 +77,11 @@ export class AuthController {
     },
     required: [ 'email', 'name', 'password' ],
     type: 'object',
+  })
+  @ApiOperationSummary('Sign up and get a JWT token')
+  @ApiResponse(200, tokenResponseContent)
+  @ApiResponse(409, {
+    description: 'Conflict, user already exists',
   })
   async signup(ctx: Context, params, body: SignupBody) {
     const { email, name, password } = body;
