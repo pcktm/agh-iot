@@ -6,7 +6,7 @@ export function RequireUser(): HookDecorator {
   return JWTRequired({
     userIdType: 'string',
     user: async (sub: string, services) => {
-      const user = await User.findOneByOrFail({ id: sub });
+      const user = await User.findOneBy({ id: sub });
       return user;
     }
   })

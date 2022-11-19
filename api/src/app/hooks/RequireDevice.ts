@@ -6,8 +6,8 @@ export function RequireDevice(): HookDecorator {
   return JWTRequired({
     userIdType: 'string',
     user: async (sub: string, services) => {
-      const user = await Device.findOneByOrFail({ id: sub });
-      return user;
+      const device = await Device.findOneBy({ id: sub });
+      return device;
     }
   })
 }

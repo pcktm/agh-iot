@@ -10,8 +10,11 @@ export class Device extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
+
+  @Column({ nullable: true })
+  lastSeenOnline: Date;
 
   @ManyToOne(() => User, user => user.devices)
   owner: User;

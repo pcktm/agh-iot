@@ -1,6 +1,7 @@
-import { Context, Get, HttpResponseOK, controller, ApiInfo, ApiOperationSummary, ApiServer } from '@foal/core';
-import { RequireUser } from '../hooks';
+import { controller, ApiInfo, ApiServer } from '@foal/core';
 import { AuthController } from './auth.controller';
+import { DeviceController } from './device.controller';
+import { UserController } from './user.controller';
 
 @ApiInfo({
   title: 'Pranie API',
@@ -13,13 +14,8 @@ import { AuthController } from './auth.controller';
 export class ApiController {
   subControllers = [
     controller('/auth', AuthController),
+    controller('/user', UserController),
+    controller('/device', DeviceController),
   ]
-
-  @Get('/me')
-  @RequireUser()
-  @ApiOperationSummary('Get the logged in user profile')
-  getMe(ctx: Context) {
-    return new HttpResponseOK(ctx.user);
-  }
 
 }
