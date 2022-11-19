@@ -1,20 +1,15 @@
-// class ApiError {
-//   String _error;
+class ApiError {
+  String? error;
 
-//   ApiError({String error}) {
-//     this._error = error;
-//   }
+  ApiError(String this.error);
 
-//   String get error => _error;
-//   set error(String error) => _error = error;
+  ApiError.fromJson(Map<String, dynamic> json) {
+    error = json['error'];
+  }
 
-//   ApiError.fromJson(Map<String, dynamic> json) {
-//     _error = json['error'];
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['error'] = this._error;
-//     return data;
-//   }
-// }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['error'] = error;
+    return data;
+  }
+}

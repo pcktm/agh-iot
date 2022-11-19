@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/landing.dart';
+import 'package:flutter_app/pages/register.dart';
 
-import 'HomePage.dart';
+import 'pages/home.dart';
 import 'pages/login.dart';
 
 void main() {
@@ -15,9 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pranie',
       routes: {
-        '/': (context) => LoginDemo(),
+        '/': (context) => Landing(),
         '/login': (context) => LoginDemo(),
-        // '/home': (context) => MyHomePage(title: 'Login Demo'),
+        '/home': (context) => HomePage(),
+        '/register': (context) => Register(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -27,4 +30,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
