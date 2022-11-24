@@ -25,20 +25,27 @@ class API:
         return self.request("GET", url, json=json);
 
     def post_heartbeat(self):
-        self.post("/heartbeat");
+        req = self.post("/heartbeat");
+        req.close()
     
     def register_device(self, ownerId, deviceName = ""):
         payload = {
             "ownerId": ownerId
         }
-        return self.post("/register", json=payload);
+        req = self.post("/register", json=payload);
+        req.close();
     
     def get_me(self):
-        return self.get("/me").json();
+        req = self.get("/me");
+        json = req.json()
+        req.close()
+        return json;
     
     def get_owner(self):
         req = self.get("/owner");
         if req.status_code == 404:
             return None;
-        return req.json()
+        json = req.json()
+        req.close()
+        return json
 
