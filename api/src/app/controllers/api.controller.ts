@@ -2,6 +2,7 @@ import { controller, ApiInfo, ApiServer } from '@foal/core';
 import { AuthController } from './auth.controller';
 import { DeviceController } from './device.controller';
 import { UserController } from './user.controller';
+import { LaundrySessionController } from './laundrysession.controller';
 
 @ApiInfo({
   title: 'Pranie API',
@@ -16,6 +17,7 @@ export class ApiController {
     controller('/auth', AuthController),
     controller('/user', UserController),
     controller('/device', DeviceController),
+    controller('/laundrysession', LaundrySessionController)
   ]
 
 }

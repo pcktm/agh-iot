@@ -1,9 +1,14 @@
-import { ApiInfo, ApiOperationSummary, ApiServer, Context, Get, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody } from '@foal/core';
-import { Device, User } from '../entities';
+import { ApiInfo, ApiOperationSummary, ApiServer, Context, Get, HttpResponseBadRequest, HttpResponseCreated, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody } from '@foal/core';
+import { Device, User, LaundrySession, Measurement } from '../entities';
 import { RequireDevice } from '../hooks/RequireDevice';
 
 interface DeviceRegistrationBody {
   ownerId: string;
+}
+
+interface MeasurementBody {
+  temperature: number;
+  humidity: number;
 }
 
 @ApiInfo({
@@ -59,5 +64,37 @@ export class BareBoardController {
     ctx.user.lastSeenOnline = new Date();
     await ctx.user.save();
     return new HttpResponseOK();
+  }
+
+  @Post('/measurement')
+  @ApiOperationSummary('Post a measurement if this device is in an active laundry session')
+  @ValidateBody({
+    properties: {
+      temperature: { type: 'number' },
+      humidity: { type: 'number' }
+    },
+    type: 'object',
+    required: ['temperature', 'humidity'],
+    additionalProperties: false
+  })
+  async postMeasurement(ctx: Context<Device>, params, body: MeasurementBody) {
+
+    const laundrySession = await LaundrySession.findOne({
+      where: { device: {
+        id: ctx.user.id
+      }, finishedAt: undefined }
+    });
+    if (!laundrySession) {
+      return new HttpResponseOK('No active laundry session');
+    }
+
+    const measurement = new Measurement();
+    measurement.laundrySession = laundrySession;
+    measurement.temperature = ctx.request.body.temperature;
+    measurement.humidity = ctx.request.body.humidity;
+    measurement.createdAt = new Date();
+    await measurement.save();
+
+    return new HttpResponseCreated(measurement);
   }
 }
