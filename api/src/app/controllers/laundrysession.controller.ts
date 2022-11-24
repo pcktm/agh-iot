@@ -1,4 +1,4 @@
-import { ApiOperationSummary, Context, Delete, Get, HttpResponseBadRequest, HttpResponseCreated, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody } from '@foal/core';
+import { ApiOperationSummary, Context, Delete, Get, HttpResponseBadRequest, HttpResponseConflict, HttpResponseCreated, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody, ValidatePathParam } from '@foal/core';
 import { Device, LaundrySession, User } from '../entities';
 import { RequireUser } from '../hooks';
 
@@ -30,6 +30,7 @@ export class LaundrySessionController {
 
   @Get('/:id')
   @ApiOperationSummary('Get laundry session by id')
+  @ValidatePathParam('id', { type: 'string', format: 'uuid' })
   async getLaundrySession(ctx: Context<User>) {
     const laundrySession = await LaundrySession.findOne({
       where: {
@@ -47,6 +48,7 @@ export class LaundrySessionController {
 
   @Get('/:id/measurements')
   @ApiOperationSummary('Get measurements for a laundry session')
+  @ValidatePathParam('id', { type: 'string', format: 'uuid' })
   async getMeasurements(ctx: Context<User>) {
     const laundrySession = await LaundrySession.findOne({
       where: {
@@ -86,17 +88,31 @@ export class LaundrySessionController {
     if (!device) {
       return new HttpResponseBadRequest();
     }
+    // if there already is a session for this device
+    const existingSession = await LaundrySession.findOne({
+      where: {
+        device: {
+          id: device.id
+        },
+        finishedAt: undefined
+      }
+    });
+    if (existingSession) {
+      return new HttpResponseConflict('There is already an active session for this device');
+    }
     const laundrySession = new LaundrySession();
     laundrySession.user = ctx.user;
     laundrySession.name = body.name;
     laundrySession.icon = body.icon;
     laundrySession.color = body.color;
+    laundrySession.device = device;
     await laundrySession.save();
     return new HttpResponseCreated(laundrySession);
   }
 
   @Post('/:id/end')
   @ApiOperationSummary('End a laundry session')
+  @ValidatePathParam('id', { type: 'string', format: 'uuid' })
   async finishLaundrySession(ctx: Context<User>) {
     const session = await LaundrySession.findOne({
       where: {
@@ -119,6 +135,7 @@ export class LaundrySessionController {
 
   @Delete('/:id')
   @ApiOperationSummary('Delete a laundry session')
+  @ValidatePathParam('id', { type: 'string', format: 'uuid' })
   async deleteLaundrySession(ctx: Context<User>) {
     const session = await LaundrySession.findOne({
       where: {

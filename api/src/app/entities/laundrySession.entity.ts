@@ -19,7 +19,7 @@ export class LaundrySession extends BaseEntity {
   @Column()
   color: string;
 
-  @ManyToOne(() => User, user => user.laundrySessions)
+  @ManyToOne(() => User, user => user.laundrySessions, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Device, device => device.laundrySessions)

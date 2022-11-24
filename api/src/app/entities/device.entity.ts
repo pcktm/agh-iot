@@ -17,7 +17,8 @@ export class Device extends BaseEntity {
   @Column({ nullable: true })
   lastSeenOnline: Date;
 
-  @ManyToOne(() => User, user => user.devices)
+  // TODO: If device connects to the cloud and is not assigned to any user, put it in pairing mode
+  @ManyToOne(() => User, user => user.devices, { onDelete: 'SET NULL'})
   owner: User;
 
   @OneToMany(() => LaundrySession, laundrySession => laundrySession.device)

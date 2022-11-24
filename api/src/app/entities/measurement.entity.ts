@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { LaundrySession } from './laundrySession.entity';
 
 @Entity()
@@ -7,7 +7,6 @@ export class Measurement extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Index()
   @ManyToOne(() => LaundrySession, laundrySession => laundrySession.measurements, { onDelete: 'CASCADE' })
   laundrySession: LaundrySession;
 
