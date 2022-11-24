@@ -3,4 +3,4 @@ export { AuthController } from './auth.controller';
 export { BareBoardController } from './bareboard.controller';
 export { UserController } from './user.controller';
 export { DeviceController } from './device.controller';
-export { LaundrysessionController } from './laundrysession.controller';
+export { LaundrySessionController } from './laundrysession.controller';

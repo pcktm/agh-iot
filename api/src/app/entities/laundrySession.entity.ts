@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Device } from './device.entity';
 import { Measurement } from './measurement.entity';
@@ -28,7 +28,7 @@ export class LaundrySession extends BaseEntity {
   @OneToMany(() => Measurement, measurement => measurement.laundrySession)
   measurements: Measurement[];
 
-  @Column()
+  @CreateDateColumn()
   startedAt: Date;
 
   @Column({ nullable: true })

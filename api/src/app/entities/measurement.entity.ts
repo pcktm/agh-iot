@@ -8,7 +8,7 @@ export class Measurement extends BaseEntity {
   id: string;
 
   @Index()
-  @ManyToOne(() => LaundrySession, laundrySession => laundrySession.measurements)
+  @ManyToOne(() => LaundrySession, laundrySession => laundrySession.measurements, { onDelete: 'CASCADE' })
   laundrySession: LaundrySession;
 
   @Column()
