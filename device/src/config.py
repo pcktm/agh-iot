@@ -24,3 +24,4 @@ class ConfigStore:
             self.config = default_config;
             with open("config.json", "w") as f:
                 json.dump(self.config, f);
+

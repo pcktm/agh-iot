@@ -34,8 +34,11 @@ class API:
         return self.post("/register", json=payload);
     
     def get_me(self):
-        return self.get("/me");
+        return self.get("/me").json();
     
     def get_owner(self):
-        return self.get("/owner");
+        req = self.get("/owner");
+        if req.status_code == 404:
+            return None;
+        return req.json()
 
