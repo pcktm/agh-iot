@@ -1,5 +1,5 @@
 import { ApiOperationSummary, Context, Get, HttpResponseOK } from '@foal/core';
-import { Device, User } from '../entities';
+import { User } from '../entities';
 import { RequireUser } from '../hooks';
 
 @RequireUser()

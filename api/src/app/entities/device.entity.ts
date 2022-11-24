@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
+import { LaundrySession } from './laundrySession.entity';
 
 @Entity()
 export class Device extends BaseEntity {
@@ -18,4 +19,7 @@ export class Device extends BaseEntity {
 
   @ManyToOne(() => User, user => user.devices)
   owner: User;
+
+  @OneToMany(() => LaundrySession, laundrySession => laundrySession.device)
+  laundrySessions: LaundrySession[];
 }
