@@ -1,8 +1,11 @@
-import json, urequests, ssl, jwt, os
+import json, urequests, ssl, jwt, os, machine, dht
 
 class API:
     key = None
     baseURL = None
+    
+    hardware_pin = machine.Pin(33)
+    sensor = None
     
     def __init__(self, baseURL = "http://192.168.1.209:3000/bareboard"):
         self.baseURL = baseURL;
@@ -11,6 +14,8 @@ class API:
             raise Exception("NO KEYFILE FOUND ON DEVICE");
         with open("key", "r") as keyfile:
             self.key = keyfile.read()
+        
+        self.sensor = dht.DHT11(self.hardware_pin)
     
     def request(self, method, url, json=None):
         headers = {
@@ -27,6 +32,25 @@ class API:
     def post_heartbeat(self):
         req = self.post("/heartbeat");
         req.close()
+    
+    def get_hardware_measurement(self):
+        self.sensor.measure()
+        return {
+            "temperature": self.sensor.temperature(),
+            "humidity": self.sensor.humidity()
+        }
+    
+    def post_measurement(self):
+        measurement = self.get_hardware_measurement()
+        req = self.post("/measurement", json=measurement)
+        res = None
+        if req.status_code == 201:
+            res = req.json()
+            print(f"Measurement posted: {res}")
+        elif req.status_code == 200:
+            print(f"No active laundry session {measurement}")
+        req.close()
+        return res
     
     def register_device(self, ownerId, deviceName = ""):
         payload = {
