@@ -1,4 +1,5 @@
 import { ApiInfo, ApiOperationSummary, ApiServer, Context, Get, HttpResponseBadRequest, HttpResponseCreated, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody } from '@foal/core';
+import { IsNull } from 'typeorm';
 import { Device, User, LaundrySession, Measurement } from '../entities';
 import { RequireDevice } from '../hooks/RequireDevice';
 
@@ -82,7 +83,7 @@ export class BareBoardController {
     const laundrySession = await LaundrySession.findOne({
       where: { device: {
         id: ctx.user.id
-      }, finishedAt: undefined }
+      }, finishedAt: IsNull() }
     });
     if (!laundrySession) {
       return new HttpResponseOK('No active laundry session');

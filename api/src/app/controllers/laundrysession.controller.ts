@@ -1,6 +1,7 @@
 import { ApiOperationSummary, Context, Delete, Get, HttpResponseBadRequest, HttpResponseConflict, HttpResponseCreated, HttpResponseNotFound, HttpResponseOK, Post, ValidateBody, ValidatePathParam } from '@foal/core';
 import { Device, LaundrySession, User } from '../entities';
 import { RequireUser } from '../hooks';
+import {IsNull} from 'typeorm';
 
 interface CreateLaundrySessionBody {
   deviceId: string;
@@ -23,7 +24,8 @@ export class LaundrySessionController {
       },
       order: {
         startedAt: 'DESC'
-      }
+      },
+      relations: ['device']
     });
     return new HttpResponseOK(laundrySessions);
   }
@@ -37,8 +39,9 @@ export class LaundrySessionController {
         id: ctx.request.params.id,
         user: {
           id: ctx.user.id
-        }
-      }
+        },
+      },
+      relations: ['device']
     });
     if (!laundrySession) {
       return new HttpResponseNotFound();
@@ -94,7 +97,7 @@ export class LaundrySessionController {
         device: {
           id: device.id
         },
-        finishedAt: undefined
+        finishedAt: IsNull(),
       }
     });
     if (existingSession) {
