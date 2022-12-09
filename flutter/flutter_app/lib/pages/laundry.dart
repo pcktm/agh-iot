@@ -1,0 +1,210 @@
+import 'dart:async';
+import 'package:expandable/expandable.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_app/models/laundry_session.dart';
+import 'package:flutter_app/models/measurment.dart';
+import 'package:flutter_app/pages/new_session.dart';
+import 'package:flutter_app/pages/plot.dart';
+import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_app/service/api.dart';
+
+import '../models/api_response.dart';
+import '../models/user.dart';
+import 'package:fl_chart/fl_chart.dart';
+
+class Laundry extends StatefulWidget {
+  const Laundry({super.key});
+
+  @override
+  _LaundryState createState() => _LaundryState();
+}
+
+class _LaundryState extends State<Laundry> {
+  late StreamController _measurementController;
+  late ApiResponse _apiResponse;
+  late Future<List<LaundrySession>> futureLaundrySessions;
+
+  Future<List<LaundrySession>> fetchSessions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token").toString();
+    return getLaundrySession(token);
+  }
+
+  void deleteSession(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token").toString();
+    deleteLaundrySession(token, id);
+  }
+
+  void stopSession(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token").toString();
+    endLaundrySession(token, id);
+  }
+
+  void _handleLogout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/login', ModalRoute.withName('/login'));
+  }
+
+  void startSession() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NewSession()),
+      // MaterialPageRoute(builder: (context) => Laundry()),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureLaundrySessions = fetchSessions();
+
+    //_measurementController = StreamController();
+    // dispose timer?
+    //Timer.periodic(const Duration(seconds: 60), (_) => fetchMeasurement());
+  }
+
+  Widget sessionHeader(data, index, {active = false}) {
+    return Row(children: [
+      Container(
+        alignment: Alignment.center,
+        // height: 40,
+        margin: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            color: Color(int.parse("0xff${data[index].color}")),
+            shape: BoxShape.circle),
+        child: Text(
+          data[index].icon,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+      ),
+      Text(data[index].name,
+          style: const TextStyle(fontSize: 20, color: Colors.blue)),
+      const SizedBox(
+        width: 25,
+      ),
+      if (active) ...[
+        Text(
+          'ACTIVE',
+          style: TextStyle(
+              // fontWeight: FontWeight.w600,
+              fontSize: 13,
+              color: Colors.white,
+              background: Paint()
+                ..strokeWidth = 15.0
+                ..color = Colors.blue
+                ..style = PaintingStyle.stroke
+                ..strokeJoin = StrokeJoin.round),
+        )
+      ]
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Home"),
+      ),
+      floatingActionButton:
+          Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+        FloatingActionButton(
+          onPressed: startSession,
+          backgroundColor: Colors.blue,
+          child: const Icon(Icons.add_rounded),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        // FloatingActionButton(
+        //   onPressed: _handleLogout,
+        //   backgroundColor: Colors.blue,
+        //   child: const Icon(Icons.logout_rounded),
+        // ),
+      ]),
+      body: Center(
+          child: FutureBuilder<List<LaundrySession>>(
+              future: futureLaundrySessions,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<LaundrySession> data = snapshot.data!;
+                  return ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (data[index].finishedAt == null) {
+                          return Column(
+                            children: [
+                              sessionHeader(data, index, active: true),
+                              Plot(id: data[index].id, active: true),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        stopSession(data[index].id),
+                                    child: const Text(
+                                      'STOP SESSION',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          );
+                        } else {
+                          return Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (_) {
+                              setState(() {
+                                deleteSession(data[index].id);
+                                data.removeAt(index);
+                              });
+                            },
+                            background: Container(
+                              color: Colors.red,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              alignment: Alignment.centerRight,
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            child: ExpandablePanel(
+                              theme: const ExpandableThemeData(
+                                headerAlignment:
+                                    ExpandablePanelHeaderAlignment.center,
+                                tapHeaderToExpand: true,
+                                hasIcon: true,
+                              ),
+                              // header: Text(data[index].name),
+                              header: sessionHeader(data, index),
+                              collapsed: Container(),
+                              expanded: Plot(
+                                id: data[index].id,
+                                active: false,
+                              ),
+                            ),
+                          );
+                        }
+                      });
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                // By default show a loading spinner.
+                return const CircularProgressIndicator();
+              })),
+    );
+  }
+}

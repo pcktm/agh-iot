@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/api_error.dart';
 import 'package:flutter_app/models/api_response.dart';
@@ -41,7 +43,7 @@ class _LoginDemoState extends State<LoginDemo> {
     await prefs.setString("token", _apiResponse.data.toString());
     // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     Navigator.pushNamedAndRemoveUntil(
-      context, '/home', ModalRoute.withName('/home'),
+      context, '/home_landing', ModalRoute.withName('/home_landing'),
       //arguments: (_apiResponse.Data as User)
     );
   }

@@ -43,7 +43,7 @@ class _RegisterState extends State<Register> {
     await prefs.setString("token", _apiResponse.data.toString());
     // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     Navigator.pushNamedAndRemoveUntil(
-      context, '/home', ModalRoute.withName('/home'),
+      context, '/home_no_device', ModalRoute.withName('/home_no_device'),
       //arguments: (_apiResponse.Data as User)
     );
   }

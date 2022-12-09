@@ -4,12 +4,12 @@ class ApiError {
   ApiError(String this.error);
 
   ApiError.fromJson(Map<String, dynamic> json) {
-    error = json['error'];
+    error = json["body"][0]["message"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['error'] = error;
+    data['message'] = error;
     return data;
   }
 }
