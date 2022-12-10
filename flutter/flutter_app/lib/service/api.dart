@@ -10,7 +10,10 @@ import '../models/api_error.dart';
 import '../models/device.dart';
 import '../models/user.dart';
 
-String _baseUrl = "localhost:3000";
+// String _baseUrl = "localhost:3000";
+// String _baseUrl = "192.168.68.220:3000";
+// String _baseUrl = "10.204.91.9:3000";
+String _baseUrl = "192.168.5.143:3000";
 // String _baseUrl = "localhost:3000";
 Future<ApiResponse> authenticateUser(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
@@ -151,7 +154,7 @@ void deleteLaundrySession(String token, String id) async {
   }
 }
 
-void endLaundrySession(String token, String id) async {
+Future<http.Response> endLaundrySession(String token, String id) async {
   var url = Uri.http(_baseUrl, 'api/laundrysession/$id/end');
 
   final response = await http
@@ -159,6 +162,8 @@ void endLaundrySession(String token, String id) async {
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load laundry sessions');
+  } else {
+    return response;
   }
 }
 

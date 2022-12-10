@@ -59,6 +59,7 @@ class _RegisterState extends State<Register> {
         appBar: AppBar(
           title: const Text("Login Page"),
         ),
+        resizeToAvoidBottomInset: false,
         body: Center(
             child: Form(
           key: _formKey,

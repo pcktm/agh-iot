@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/measurment.dart';
@@ -15,8 +16,7 @@ import 'package:fl_chart/fl_chart.dart';
 
 class Plot extends StatefulWidget {
   final String id;
-  final bool active;
-  const Plot({super.key, required this.id, required this.active});
+  const Plot({super.key, required this.id});
   @override
   _PlotState createState() => _PlotState();
 }
@@ -28,7 +28,7 @@ class _PlotState extends State<Plot> {
     const Color(0xFF5620FF),
   ];
   final int _divider = 25;
-  final int _leftLabelsCount = 6;
+  final int _leftLabelsCount = 3;
 
   List<FlSpot> _values = const [];
   int currentTemperature = 0;
@@ -79,6 +79,8 @@ class _PlotState extends State<Plot> {
     _leftTitlesInterval =
         ((_maxY - _minY) / (_leftLabelsCount - 1)).floorToDouble();
 
+    if (!mounted) return;
+
     setState(() {});
   }
 
@@ -115,7 +117,7 @@ class _PlotState extends State<Plot> {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 30,
-              interval: (_maxX - _minX) / 3,
+              interval: max(1, (_maxX - _minX) / 3),
               getTitlesWidget: bottomTitleWidgets,
             ),
             axisNameWidget: Text(
@@ -145,8 +147,7 @@ class _PlotState extends State<Plot> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Color(0xff68737d),
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 10,
     );
     Widget text;
     final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
@@ -161,8 +162,7 @@ class _PlotState extends State<Plot> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Colors.black,
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
+      fontSize: 13,
     );
     String text = "$value%";
     return Text(text, style: style, textAlign: TextAlign.center);
@@ -188,13 +188,18 @@ class _PlotState extends State<Plot> {
 
   @override
   Widget build(BuildContext context) {
+    if (_values.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        child: const Text('No measurements'),
+      );
+    }
     return AspectRatio(
         aspectRatio: 1.70,
         child: Padding(
             padding: const EdgeInsets.only(
                 right: 18.0, left: 12.0, top: 24, bottom: 12),
-            child: _values.isEmpty
-                ? const CircularProgressIndicator()
-                : LineChart(_mainData())));
+            child: LineChart(_mainData())));
   }
 }

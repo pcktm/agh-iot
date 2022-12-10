@@ -23,7 +23,7 @@ class _NewSessionState extends State<NewSession> {
   var formKey = GlobalKey<FormState>();
   var titleController = TextEditingController();
   Color mycolor = Colors.yellow;
-  String selectedEmoji = "🩲";
+  String selectedEmoji = "👕";
   bool emojiShowing = false;
   late String dropdownvalue;
   late Device currentDevice;
@@ -92,11 +92,11 @@ class _NewSessionState extends State<NewSession> {
           child: Column(
             children: <Widget>[
               const SizedBox(
-                height: 20,
+                height: 15,
               ),
               SizedBox(
                   width: 200.0,
-                  height: 100.0,
+                  height: 80.0,
                   child: TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: mycolor,
@@ -120,7 +120,7 @@ class _NewSessionState extends State<NewSession> {
               Form(
                 key: formKey,
                 child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: TextFormField(
                       controller: titleController,
                       keyboardType: TextInputType.text,
@@ -145,7 +145,7 @@ class _NewSessionState extends State<NewSession> {
                     )),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(5.0),
                 child: FutureBuilder<List<Device>>(
                     future: devices,
                     builder: (context, snapshot) {
@@ -175,7 +175,7 @@ class _NewSessionState extends State<NewSession> {
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(5),
                   child: Card(
                     elevation: 2,
                     child: ColorPicker(
@@ -189,9 +189,9 @@ class _NewSessionState extends State<NewSession> {
                         ColorPickerType.primary: true,
                         ColorPickerType.accent: false,
                       },
-                      width: 44,
-                      height: 44,
-                      borderRadius: 22,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
                     ),
                   ),
                 ),

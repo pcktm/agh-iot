@@ -21,9 +21,20 @@ class _LandingState extends State<Landing> {
 
   _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _userId = (prefs.getString('userId') ?? "");
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/login', ModalRoute.withName('/login'));
+    String token = (prefs.getString("token") ?? "");
+    if (token == "") {
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login', ModalRoute.withName('/login'));
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context, '/home_landing', ModalRoute.withName('/home_landing'),
+        //arguments: (_apiResponse.Data as User)
+      );
+    }
+
+    // _userId = (prefs.getString('userId') ?? "");
+    // Navigator.pushNamedAndRemoveUntil(
+    //     context, '/login', ModalRoute.withName('/login'));
     // TODO: sprawdzać czy user zalogowany
     // if (_userId == "") {
     //   Navigator.pushNamedAndRemoveUntil(
