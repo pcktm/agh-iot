@@ -11,15 +11,18 @@ def connect_to_ap(ssid, password):
         pass
     print('network config:', wlan.ifconfig())
 
+
 def is_connected():
     wlan = network.WLAN(network.STA_IF)
     return wlan.isconnected()
+
 
 def expose_ap(ssid="iot device", password=""):
     wlan = network.WLAN(network.AP_IF)
     wlan.active(True)
     wlan.config(essid=ssid, password=password)
     print('network config:', wlan.ifconfig())
+
 
 def busy_wait_for_config():
     addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
@@ -39,4 +42,3 @@ def busy_wait_for_config():
                 break
         cl.send('OK')
         cl.close()
-
