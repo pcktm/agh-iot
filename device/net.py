@@ -1,6 +1,8 @@
 import network
 import socket
 import machine
+import json
+import time
 
 def connect_to_ap(ssid, password):
     wlan = network.WLAN(network.STA_IF)
@@ -17,11 +19,17 @@ def is_connected():
     return wlan.isconnected()
 
 
-def expose_ap(ssid="iot device", password=""):
-    wlan = network.WLAN(network.AP_IF)
-    wlan.active(True)
-    wlan.config(essid=ssid, password=password)
-    print('network config:', wlan.ifconfig())
+def expose_ap(ssid="iot device"):
+    wlan = network.WLAN(network.STA_IF)
+    if wlan.active():
+        wlan.active(False)
+        time.sleep_us(100)
+    ap = network.WLAN(network.AP_IF)
+    ap.active(True)
+    time.sleep_us(100) # wait for something, panics otherwise lol
+    ap.config(essid=ssid)
+    print('network config:', ap.ifconfig())
+    return ap
 
 
 def busy_wait_for_config():

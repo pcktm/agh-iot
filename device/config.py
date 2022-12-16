@@ -7,7 +7,8 @@ default_config = {
     },
     "device": {
         "name": "Default Device Name"
-    }
+    },
+    "ownerToBeRegisteredTo": None,
 }
 
 
@@ -32,31 +33,32 @@ class ConfigStore:
 
     def get(self, key):
         # allow nested keys and return null if not found
-        if "." in key:
-            try:
+        try:
+            if "." in key:
                 keys = key.split(".")
                 current = self.config
                 for i in range(0, len(keys) - 1):
                     current = current[keys[i]]
                 return current[keys[-1]]
-            except:
-                return None
-        else:
-            return self.config[key]
+            else:
+                return self.config[key]
+        except:
+            print(f"Error getting config value {key}")
+            return None
 
     def set(self, key, value):
-        if "." in key:
-            try:
+        try:
+            if "." in key:
                 keys = key.split(".")
                 current = self.config
                 for i in range(0, len(keys) - 1):
                     current = current[keys[i]]
                 current[keys[-1]] = value
-            except:
-                print("Error setting config value")
-        else:
-            self.config[key] = value
-        self.save()
+            else:
+                self.config[key] = value
+            self.save()
+        except:
+            print(f"Error setting config value {key} to {value}")
 
 
 config = ConfigStore()

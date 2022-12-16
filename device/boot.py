@@ -1,4 +1,5 @@
 import machine
+import time
 import net
 from api import api
 from config import config
@@ -16,32 +17,41 @@ def cold_boot():
         print("Soft reset, not entering pairing mode!")
     else:
         print("Cold boot & no wifi credentials, entering pairing mode!")
-        net.expose_ap()
         enter_pairing_mode()
-
 
 if machine.reset_cause() == machine.HARD_RESET:
-    raise Exception("Hard reset, probably panicked, not starting reporter!")
-else:
-    cold_boot()
+    print("Hard reset, probably panicked, waiting 5 seconds before continuing")
+    time.sleep(5)
 
-    me = api.get_me()
-    if not me:
-        print(
-            "This device does not exist or no internet connection? Entering pairing mode anyway lol"
-        )
-        enter_pairing_mode()
+print("Starting up...")
+cold_boot()
 
-    owner = api.get_owner()
-    if not owner:
-        enter_pairing_mode()
+me = api.get_me()
+if not me:
+    print(
+        "Couldn't get /me, probably no connection, entering pairing mode")
+    enter_pairing_mode()
 
-    if net.is_connected() and owner is not None:
-        heartbeat_timer = machine.Timer(0)
-        heartbeat_timer.init(period=10000,
-                             mode=machine.Timer.PERIODIC,
-                             callback=lambda t: api.post_heartbeat())
-        measurement_timer = machine.Timer(1)
-        measurement_timer.init(period=20 * 1000,
-                               mode=machine.Timer.PERIODIC,
-                               callback=lambda t: api.post_measurement())
+if config.get("ownerToBeRegisteredTo") is not None:
+    print("Registering this device to owner with id: ",
+            config.get("ownerToBeRegisteredTo"))
+    api.register_device(config.get("ownerToBeRegisteredTo"))
+    config.set("ownerToBeRegisteredTo", None)
+
+owner = api.get_owner()
+if not owner:
+    print(
+        "Couldn't get owner, probably likey device removed from account or not registered, entering pairing mode"
+    )
+    enter_pairing_mode()
+print("Device registered to owner: ", owner)
+
+if net.is_connected() and owner is not None:
+    heartbeat_timer = machine.Timer(0)
+    heartbeat_timer.init(period=10000,
+                            mode=machine.Timer.PERIODIC,
+                            callback=lambda t: api.post_heartbeat())
+    measurement_timer = machine.Timer(1)
+    measurement_timer.init(period=20 * 1000,
+                            mode=machine.Timer.PERIODIC,
+                            callback=lambda t: api.post_measurement())

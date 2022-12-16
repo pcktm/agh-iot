@@ -1,4 +1,4 @@
-import json, urequests, ssl, jwt, os, machine, dht
+import urequests, os, machine, dht
 from pairing import enter_pairing_mode
 
 
@@ -18,17 +18,15 @@ class APIClient:
             self.key = keyfile.read()
 
         self.sensor = dht.DHT11(self.hardware_pin)
+        self.sensor.measure()
+        print(f"API client initialized, temp: {self.sensor.temperature()}")
 
     def request(self, method, url, json=None):
         headers = {"Authorization": f"Bearer {self.key}"}
-        try:
-            return urequests.request(method,
-                                     f"{self.baseURL}{url}",
-                                     json=json,
-                                     headers=headers)
-        except:
-            print("Something went wrong with the request")
-            return None
+        return urequests.request(method,
+                                 f"{self.baseURL}{url}",
+                                 json=json,
+                                 headers=headers)
 
     def post(self, url, json=None):
         return self.request("POST", url, json=json)
@@ -65,10 +63,12 @@ class APIClient:
         req.close()
 
     def get_me(self):
-        req = self.get("/me")
-        json = req.json()
-        req.close()
-        return json
+        try:
+            req = self.get("/me")
+            json = req.json()
+            return json
+        except:
+            return None
 
     def get_owner(self):
         req = self.get("/owner")
