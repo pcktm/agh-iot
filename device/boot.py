@@ -18,6 +18,41 @@ def cold_boot():
     else:
         print("Cold boot & no wifi credentials, entering pairing mode!")
         enter_pairing_mode()
+        return
+
+def post_boot():
+    me = api.get_me()
+    if not me:
+        print(
+            "Couldn't get /me, probably no connection, entering pairing mode")
+        enter_pairing_mode()
+        return
+
+    if config.get("ownerToBeRegisteredTo") is not None:
+        print("Registering this device to owner with id: ",
+                config.get("ownerToBeRegisteredTo"))
+        api.register_device(config.get("ownerToBeRegisteredTo"))
+        config.set("ownerToBeRegisteredTo", None)
+
+    owner = api.get_owner()
+    if owner is None:
+        print(
+            "Couldn't get owner, probably likey device removed from account or not registered, entering pairing mode"
+        )
+        enter_pairing_mode()
+        return
+    print("Device registered to owner: ", owner)
+
+    if net.is_connected() and owner is not None:
+        heartbeat_timer = machine.Timer(0)
+        heartbeat_timer.init(period=10000,
+                                mode=machine.Timer.PERIODIC,
+                                callback=lambda t: api.post_heartbeat())
+        measurement_timer = machine.Timer(1)
+        measurement_timer.init(period=20 * 1000,
+                                mode=machine.Timer.PERIODIC,
+                                callback=lambda t: api.post_measurement())
+
 
 if machine.reset_cause() == machine.HARD_RESET:
     print("Hard reset, probably panicked, waiting 5 seconds before continuing")
@@ -25,33 +60,4 @@ if machine.reset_cause() == machine.HARD_RESET:
 
 print("Starting up...")
 cold_boot()
-
-me = api.get_me()
-if not me:
-    print(
-        "Couldn't get /me, probably no connection, entering pairing mode")
-    enter_pairing_mode()
-
-if config.get("ownerToBeRegisteredTo") is not None:
-    print("Registering this device to owner with id: ",
-            config.get("ownerToBeRegisteredTo"))
-    api.register_device(config.get("ownerToBeRegisteredTo"))
-    config.set("ownerToBeRegisteredTo", None)
-
-owner = api.get_owner()
-if not owner:
-    print(
-        "Couldn't get owner, probably likey device removed from account or not registered, entering pairing mode"
-    )
-    enter_pairing_mode()
-print("Device registered to owner: ", owner)
-
-if net.is_connected() and owner is not None:
-    heartbeat_timer = machine.Timer(0)
-    heartbeat_timer.init(period=10000,
-                            mode=machine.Timer.PERIODIC,
-                            callback=lambda t: api.post_heartbeat())
-    measurement_timer = machine.Timer(1)
-    measurement_timer.init(period=20 * 1000,
-                            mode=machine.Timer.PERIODIC,
-                            callback=lambda t: api.post_measurement())
+post_boot()

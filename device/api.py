@@ -9,7 +9,7 @@ class APIClient:
     hardware_pin = machine.Pin(33)
     sensor = None
 
-    def __init__(self, baseURL="http://192.168.1.209:3000/bareboard"):
+    def __init__(self, baseURL="https://iotapi.k00l.net/bareboard"):
         self.baseURL = baseURL
         if not ('key' in os.listdir()):
             print("NO KEYFILE ON DEVICE!!")
