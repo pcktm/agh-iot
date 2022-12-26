@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/laundry_session.dart';
 import 'package:flutter_app/service/api.dart';
-// import 'package:flutterloginrestapi/models/api_response.dart';
-// import 'package:flutterloginrestapi/service/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/device.dart';
@@ -49,13 +47,9 @@ class _HomeLandingState extends State<HomeLanding> {
             context, '/home_device', ModalRoute.withName('/home_device'));
       } else {
         Navigator.pushNamedAndRemoveUntil(
-            context, '/laundry', ModalRoute.withName('/home_device'));
+            context, '/laundry', ModalRoute.withName('/laundry'));
       }
     }
-
-    // _userId = (prefs.getString('userId') ?? "");
-    // Navigator.pushNamedAndRemoveUntil(
-    //     context, '/login', ModalRoute.withName('/login'));
   }
 
   @override

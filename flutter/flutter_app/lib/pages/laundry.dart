@@ -3,18 +3,10 @@ import 'package:expandable/expandable.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/laundry_session.dart';
-import 'package:flutter_app/models/measurment.dart';
 import 'package:flutter_app/pages/new_session.dart';
 import 'package:flutter_app/pages/plot.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_app/service/api.dart';
-
-import '../models/api_response.dart';
-import '../models/user.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class Laundry extends StatefulWidget {
   const Laundry({super.key});
@@ -24,8 +16,6 @@ class Laundry extends StatefulWidget {
 }
 
 class _LaundryState extends State<Laundry> {
-  late StreamController _measurementController;
-  late ApiResponse _apiResponse;
   late Future<List<LaundrySession>> futureLaundrySessions;
   late Timer timer;
 
@@ -59,7 +49,6 @@ class _LaundryState extends State<Laundry> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const NewSession()),
-      // MaterialPageRoute(builder: (context) => Laundry()),
     );
   }
 
@@ -68,10 +57,6 @@ class _LaundryState extends State<Laundry> {
     super.initState();
     futureLaundrySessions = fetchSessions();
     timer = Timer.periodic(const Duration(minutes: 5), (Timer t) => refresh());
-
-    //_measurementController = StreamController();
-    // dispose timer?
-    //Timer.periodic(const Duration(seconds: 60), (_) => fetchMeasurement());
   }
 
   Future refresh() async {
@@ -85,7 +70,6 @@ class _LaundryState extends State<Laundry> {
     return Row(children: [
       Container(
         alignment: Alignment.center,
-        // height: 40,
         margin: const EdgeInsets.all(15.0),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -107,7 +91,6 @@ class _LaundryState extends State<Laundry> {
         Text(
           'ACTIVE',
           style: TextStyle(
-              // fontWeight: FontWeight.w600,
               fontSize: 13,
               color: Colors.white,
               background: Paint()
@@ -124,7 +107,7 @@ class _LaundryState extends State<Laundry> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Home"),
+          title: const Text("Laundries"),
         ),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [

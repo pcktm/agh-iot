@@ -6,7 +6,6 @@ import 'package:flutter_app/models/api_response.dart';
 import 'package:flutter_app/service/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import '../models/device.dart';
@@ -48,19 +47,17 @@ class _NewSessionState extends State<NewSession> {
   }
 
   void _handleSubmitted() async {
-    // final FormState? form = formKey.currentState;
     if (formKey.currentState!.validate()) {
-      // showInSnackBar('Please fix the errors in red before submitting.');
       formKey.currentState!.save();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = prefs.getString("token").toString();
-      ApiResponse _apiResponse = await createLaundrySession(
+      ApiResponse apiResponse = await createLaundrySession(
           token, currentDevice.id, _laundryName, selectedEmoji, mycolor.hex);
-      if ((_apiResponse.apiError) == null) {
+      if ((apiResponse.apiError) == null) {
         Navigator.pushNamedAndRemoveUntil(
             context, '/laundry', ModalRoute.withName('/home_device'));
       } else {
-        showInSnackBar((_apiResponse.apiError as ApiError).error.toString());
+        showInSnackBar((apiResponse.apiError as ApiError).error.toString());
       }
     }
     // if (titleController.va)
@@ -126,8 +123,6 @@ class _NewSessionState extends State<NewSession> {
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       enableSuggestions: true,
-                      // onFieldSubmitted:(s){onSubmitted!();} ,
-                      // onTap: ontap,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Pranie name be not  empty';

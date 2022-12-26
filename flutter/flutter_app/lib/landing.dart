@@ -6,13 +6,13 @@ import 'models/api_error.dart';
 import 'models/user.dart';
 
 class Landing extends StatefulWidget {
+  const Landing({super.key});
+
   @override
   _LandingState createState() => _LandingState();
 }
 
 class _LandingState extends State<Landing> {
-  String _userId = "";
-
   @override
   void initState() {
     super.initState();
@@ -27,33 +27,15 @@ class _LandingState extends State<Landing> {
           context, '/login', ModalRoute.withName('/login'));
     } else {
       Navigator.pushNamedAndRemoveUntil(
-        context, '/home_landing', ModalRoute.withName('/home_landing'),
-        //arguments: (_apiResponse.Data as User)
+        context,
+        '/home_landing',
+        ModalRoute.withName('/home_landing'),
       );
     }
-
-    // _userId = (prefs.getString('userId') ?? "");
-    // Navigator.pushNamedAndRemoveUntil(
-    //     context, '/login', ModalRoute.withName('/login'));
-    // TODO: sprawdzać czy user zalogowany
-    // if (_userId == "") {
-    //   Navigator.pushNamedAndRemoveUntil(
-    //       context, '/login', ModalRoute.withName('/login'));
-    // } else {
-    //   ApiResponse _apiResponse = await getUserDetails(_userId);
-    //   if ((_apiResponse.ApiError as ApiError) == null) {
-    //     Navigator.pushNamedAndRemoveUntil(
-    //         context, '/home', ModalRoute.withName('/home'),
-    //         arguments: (_apiResponse.Data as User));
-    //   } else {
-    //     Navigator.pushNamedAndRemoveUntil(
-    //         context, '/login', ModalRoute.withName('/login'));
-    //   }
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: CircularProgressIndicator()));
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

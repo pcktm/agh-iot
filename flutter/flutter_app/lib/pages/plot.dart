@@ -3,15 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/measurment.dart';
-import 'package:flutter_app/pages/new_session.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_app/service/api.dart';
 
-import '../models/api_response.dart';
-import '../models/user.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class Plot extends StatefulWidget {

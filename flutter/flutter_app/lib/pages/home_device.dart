@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/laundry.dart';
-import 'package:flutter_app/pages/new_session.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app/service/api.dart';
 
@@ -16,7 +13,6 @@ class HomeDevice extends StatefulWidget {
 }
 
 class _HomeDeviceState extends State<HomeDevice> {
-  late ApiResponse _apiResponse;
   late Future<User> futureUser;
 
   Future<User> fetchUser() async {
@@ -35,11 +31,6 @@ class _HomeDeviceState extends State<HomeDevice> {
   void startSession() {
     Navigator.pushNamedAndRemoveUntil(
         context, '/new_session', ModalRoute.withName('/new_session'));
-    // Navigator.push(
-    //   context,
-    //   // MaterialPageRoute(builder: (context) => const NewSession()),
-    //   MaterialPageRoute(builder: (context) => Laundry()),
-    // );
   }
 
   @override

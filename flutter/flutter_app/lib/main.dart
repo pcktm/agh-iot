@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/landing.dart';
 import 'package:flutter_app/pages/laundry.dart';
 import 'pages/home_device.dart';
+import 'pages/pair_device.dart';
 import 'pages/register.dart';
 import 'pages/home_landing.dart';
 import 'pages/home_no_device.dart';
@@ -29,12 +30,11 @@ class MyApp extends StatelessWidget {
         '/home_device': (context) => const HomeDevice(),
         '/new_session': (context) => const NewSession(),
         '/laundry': (context) => const Laundry(),
+        '/pair': ((context) => const Pair())
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // debugShowCheckedModeBanner: false,
-      // home: LoginDemo(),
     );
   }
 }

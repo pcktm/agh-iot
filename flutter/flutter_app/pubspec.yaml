@@ -45,6 +45,7 @@ dependencies:
   fl_chart: ^0.55.2
   intl: ^0.17.0
   expandable: ^5.0.1
+  wifi_iot: ^0.3.18
 
 dev_dependencies:
   flutter_test:

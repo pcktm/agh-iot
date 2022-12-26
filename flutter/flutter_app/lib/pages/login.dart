@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/api_error.dart';
 import 'package:flutter_app/models/api_response.dart';
@@ -16,7 +14,6 @@ class LoginDemo extends StatefulWidget {
 class _LoginDemoState extends State<LoginDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool _autovalidate = false;
   String _email = "", _password = "";
   late ApiResponse _apiResponse;
 
@@ -39,12 +36,11 @@ class _LoginDemoState extends State<LoginDemo> {
 
   void _saveAndRedirectToHome() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setString("userId", (_apiResponse.Data as User).userId);
     await prefs.setString("token", _apiResponse.data.toString());
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     Navigator.pushNamedAndRemoveUntil(
-      context, '/home_landing', ModalRoute.withName('/home_landing'),
-      //arguments: (_apiResponse.Data as User)
+      context,
+      '/home_landing',
+      ModalRoute.withName('/home_landing'),
     );
   }
 
@@ -70,9 +66,6 @@ class _LoginDemoState extends State<LoginDemo> {
                 child: SizedBox(
                     width: 200,
                     height: 150,
-                    /*decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(50.0)),*/
                     child: Image.asset('asset/images/washing-machine.png')),
               ),
             ),
@@ -138,10 +131,6 @@ class _LoginDemoState extends State<LoginDemo> {
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/register');
-                // Navigator.pushNamedAndRemoveUntil(
-                //   context, '/register', ModalRoute.withName('/register'),
-                //   //arguments: (_apiResponse.Data as User)
-                // );
               },
               child: const Text(
                 'New user? Register',

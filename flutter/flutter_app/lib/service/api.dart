@@ -13,11 +13,13 @@ import '../models/user.dart';
 // String _baseUrl = "localhost:3000";
 // String _baseUrl = "192.168.68.220:3000";
 // String _baseUrl = "10.204.91.9:3000";
-String _baseUrl = "192.168.5.143:3000";
+// String _baseUrl = "192.168.5.143:3000";
 // String _baseUrl = "localhost:3000";
+String _baseUrl = "iotapi.k00l.net";
+
 Future<ApiResponse> authenticateUser(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
-  var url = Uri.http(_baseUrl, 'api/auth/login');
+  var url = Uri.https(_baseUrl, 'api/auth/login');
 
   try {
     final response = await http.post(url, body: {
@@ -45,7 +47,7 @@ Future<ApiResponse> authenticateUser(String email, String password) async {
 Future<ApiResponse> createUser(
     String username, String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
-  var url = Uri.http(_baseUrl, 'api/auth/signup');
+  var url = Uri.https(_baseUrl, 'api/auth/signup');
 
   try {
     final response = await http.post(url, body: {
@@ -75,7 +77,7 @@ Future<ApiResponse> createUser(
 }
 
 Future<User> getUser(String token) async {
-  var url = Uri.http(_baseUrl, 'api/user');
+  var url = Uri.https(_baseUrl, 'api/user');
 
   final response = await http
       .get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -88,7 +90,7 @@ Future<User> getUser(String token) async {
 }
 
 Future<List<Device>> getDevices(String token) async {
-  var url = Uri.http(_baseUrl, 'api/user/devices');
+  var url = Uri.https(_baseUrl, 'api/user/devices');
 
   final response = await http
       .get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -103,7 +105,7 @@ Future<List<Device>> getDevices(String token) async {
 Future<ApiResponse> createLaundrySession(String token, String deviceId,
     String name, String icon, String color) async {
   ApiResponse apiResponse = ApiResponse();
-  var url = Uri.http(_baseUrl, 'api/laundrysession');
+  var url = Uri.https(_baseUrl, 'api/laundrysession');
 
   try {
     final response = await http.post(url, headers: {
@@ -131,7 +133,7 @@ Future<ApiResponse> createLaundrySession(String token, String deviceId,
 }
 
 Future<List<LaundrySession>> getLaundrySession(String token) async {
-  var url = Uri.http(_baseUrl, 'api/laundrysession');
+  var url = Uri.https(_baseUrl, 'api/laundrysession');
 
   final response = await http
       .get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -144,7 +146,7 @@ Future<List<LaundrySession>> getLaundrySession(String token) async {
 }
 
 void deleteLaundrySession(String token, String id) async {
-  var url = Uri.http(_baseUrl, 'api/laundrysession/$id');
+  var url = Uri.https(_baseUrl, 'api/laundrysession/$id');
 
   final response = await http
       .delete(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -155,7 +157,7 @@ void deleteLaundrySession(String token, String id) async {
 }
 
 Future<http.Response> endLaundrySession(String token, String id) async {
-  var url = Uri.http(_baseUrl, 'api/laundrysession/$id/end');
+  var url = Uri.https(_baseUrl, 'api/laundrysession/$id/end');
 
   final response = await http
       .post(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -168,7 +170,7 @@ Future<http.Response> endLaundrySession(String token, String id) async {
 }
 
 Future<List<Measurement>> getMeasurement(String token, String id) async {
-  var url = Uri.http(_baseUrl, 'api/laundrysession/$id/measurements');
+  var url = Uri.https(_baseUrl, 'api/laundrysession/$id/measurements');
 
   final response = await http
       .get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
@@ -178,4 +180,32 @@ Future<List<Measurement>> getMeasurement(String token, String id) async {
   } else {
     throw Exception('Failed to load measurement');
   }
+}
+
+Future<ApiResponse> pairDevice(
+    String userId, String ssid, String password) async {
+  ApiResponse apiResponse = ApiResponse();
+  var url = Uri.http('192.168.4.1:80', 'pair');
+  var body = {
+    "ssid": ssid,
+    "password": password,
+    "userId": userId,
+  };
+  var headers = {
+    "Content-Type": "application/json",
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Content-Length": utf8.encode(json.encode(body)).length.toString()
+  };
+
+  final response =
+      await http.post(url, body: json.encode(body), headers: headers);
+
+  if (response.statusCode != 200) {
+    apiResponse.apiError = ApiError("Wrong format of data");
+  } else {
+    apiResponse.data = json.decode(response.body)["token"];
+  }
+
+  return apiResponse;
 }

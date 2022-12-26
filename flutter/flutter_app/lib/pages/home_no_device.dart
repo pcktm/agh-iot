@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app/service/api.dart';
 
@@ -28,6 +27,10 @@ class _HomeNoDeviceState extends State<HomeNoDevice> {
     prefs.remove('token');
     Navigator.pushNamedAndRemoveUntil(
         context, '/login', ModalRoute.withName('/login'));
+  }
+
+  void _newDevice() async {
+    Navigator.pushNamed(context, '/pair');
   }
 
   @override
@@ -73,9 +76,8 @@ class _HomeNoDeviceState extends State<HomeNoDevice> {
                   height: 50,
                   margin: const EdgeInsets.all(60.0),
                   width: 250,
-                  // padding: const EdgeInsets.only(top: 40.0),
                   child: ElevatedButton(
-                    onPressed: _handleLogout,
+                    onPressed: _newDevice,
                     child: const Text(
                       'Add device',
                       style: TextStyle(color: Colors.white, fontSize: 25),

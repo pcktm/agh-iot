@@ -13,11 +13,7 @@ class Register extends StatefulWidget {
   _RegisterState createState() => _RegisterState();
 }
 
-// Create a corresponding State class, which holds data related to the form.
 class _RegisterState extends State<Register> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  bool _autovalidate = false;
   String _username = "", _password = "", _email = "";
   late ApiResponse _apiResponse;
 
@@ -41,23 +37,22 @@ class _RegisterState extends State<Register> {
   void _saveAndRedirectToHome() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", _apiResponse.data.toString());
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     Navigator.pushNamedAndRemoveUntil(
-      context, '/home_no_device', ModalRoute.withName('/home_no_device'),
-      //arguments: (_apiResponse.Data as User)
+      context,
+      '/home_no_device',
+      ModalRoute.withName('/home_no_device'),
     );
   }
 
   void showInSnackBar(String value) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: new Text(value)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Login Page"),
+          title: const Text("Register Page"),
         ),
         resizeToAvoidBottomInset: false,
         body: Center(
