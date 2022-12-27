@@ -27,10 +27,8 @@ class _LandingState extends State<Landing> {
           context, '/login', ModalRoute.withName('/login'));
     } else {
       Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/home_landing',
-        ModalRoute.withName('/home_landing'),
-      );
+          context, '/home_landing', ModalRoute.withName('/home_landing'),
+          arguments: false);
     }
   }
 

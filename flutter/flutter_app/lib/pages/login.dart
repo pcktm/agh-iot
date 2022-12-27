@@ -38,10 +38,8 @@ class _LoginDemoState extends State<LoginDemo> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", _apiResponse.data.toString());
     Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home_landing',
-      ModalRoute.withName('/home_landing'),
-    );
+        context, '/home_landing', ModalRoute.withName('/home_landing'),
+        arguments: false);
   }
 
   void showInSnackBar(String value) {

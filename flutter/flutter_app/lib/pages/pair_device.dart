@@ -106,10 +106,8 @@ class _PairState extends State<Pair> {
 
   void _saveAndRedirectToHome() async {
     Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home_device',
-      ModalRoute.withName('/home_device'),
-    );
+        context, '/home_landing', ModalRoute.withName('/home_landing'),
+        arguments: true);
   }
 
   void showInSnackBar(String value) {
@@ -168,12 +166,6 @@ class _PairState extends State<Pair> {
                       ),
                       onSaved: (value) {
                         _password = value.toString();
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required';
-                        }
-                        return null;
                       },
                     ),
                     Container(
